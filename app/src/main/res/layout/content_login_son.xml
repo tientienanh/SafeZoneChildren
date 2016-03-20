@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="50dp"
+    android:background="@drawable/background" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/logo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="10dp" >
+
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/safezone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:orientation="vertical" >
+
+           <EditText
+                android:id="@+id/edtChildUser"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:hint="Children's username"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:background="@android:drawable/editbox_background"
+                />
+            <EditText
+                android:id="@+id/edtParentUsername_in_Child"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:drawable/editbox_background"
+                android:gravity="center"
+                android:hint="Parent's username"
+                android:singleLine="true"
+                android:textColor="#000000" />
+            <EditText
+                android:id="@+id/edtParentPass_in_Child"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:background="@android:drawable/editbox_background"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:textColor="#000000" />
+            <Button
+                android:id="@+id/btnLoginChild"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_select"
+                android:text="Login"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>
