@@ -10,7 +10,14 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +30,9 @@ import static com.google.android.gms.internal.zzid.runOnUiThread;
 public class MyService extends Service implements LocationListener {
     private static final long MIN_DISTANCE_FOR_UPDATE = 10;
     private static final long MIN_TIME_FOR_UPDATE = 1000 * 30;  // 30s
+
+    private static final long TIME_DELAY = 2000;  // 2s
+    private static final long TIME_PERIOD = 300000;  // 5p
 
     boolean isGPSEnabled;
     LocationManager locationManager;
@@ -45,7 +55,8 @@ public class MyService extends Service implements LocationListener {
 
         timer = new Timer();
         myTimerTask = new MyTimerTask();  // lam viec cap nhat vi tri va put vi tri trong nay
-        timer.schedule(myTimerTask, 2000, 120000); // cu sau 2p  la lam lai viec nay
+        timer.schedule(myTimerTask, TIME_DELAY, TIME_PERIOD); // cu sau 5p  la lam lai viec nay
+
     }
 
 
@@ -57,6 +68,8 @@ public class MyService extends Service implements LocationListener {
         return result;
     }
 
+    HashMap<String, String> hashMapLocation = new HashMap<String, String>();
+    String jsonStr = "";
     class MyTimerTask extends TimerTask {
         @Override
         public void run() {
@@ -65,13 +78,53 @@ public class MyService extends Service implements LocationListener {
                 @Override
                 public void run() {
 
-                 Log.d("", "on Son Service");
+                    Log.d("", "on Son Service");
                     // 1. lay vi tri GPS roi dua len Parse
                     getCurrentLocation();
-//                    updateLocation(lat, llong);
-                    UpdateToParse updateToParse = new UpdateToParse();
-                    updateToParse.updateLocation("Children", lat, llong, getBaseContext());
+                    // put lat, llong on MySQL
+                    hashMapLocation.put("PUT", "1");
+                    hashMapLocation.put("user_parent", LoginSonActivity.PARENT_USER);
+                    hashMapLocation.put("username", ShowChildrenActivity.CHILD_USER);
+                    hashMapLocation.put("latitude", String.valueOf(lat));
+                    hashMapLocation.put("longitude", String.valueOf(llong));
 
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Calendar c = Calendar.getInstance();
+                    String timeStr = simpleDateFormat.format(c.getTime());
+                    hashMapLocation.put("time", timeStr);
+                    final ChildThread childThread = CreateThread.getInstance().childThread;
+                    if (childThread.clientSocket.isConnected() == true) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    childThread.oos.writeObject(hashMapLocation);
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }).start();
+                        childThread.mCallback = new ChildThread.Callback() {
+                            @Override
+                            public void onReceivedData(String json) {
+                                jsonStr = json;
+                                try {
+                                    JSONObject jsonObject = new JSONObject(jsonStr);
+                                    String result = jsonObject.getString("RESULT");
+                                    if (result.equals("OK")) {
+                                        Log.d("B", "insert location");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onConnected(boolean isSuccess) {
+
+                            }
+                        };
+                    }
                 }
             });
         }

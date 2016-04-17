@@ -14,7 +14,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:largeHeap="true"
+        >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -22,15 +24,21 @@
         </activity>
         <activity android:name=".ChildenActivity" >
         </activity>
+        <activity android:name=".ShowChildrenActivity" />
 
         <service android:name=".MyService" />
-        <activity android:name=".LoginSonActivity">
 
+        <activity android:name=".LoginSonActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShowFunctionActivity"
+            android:label="@string/title_activity_show_function"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 
